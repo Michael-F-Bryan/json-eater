@@ -87,7 +87,6 @@ impl<'de, V: Visitor> serde::de::Visitor<'de> for &mut Seed<V> {
                 None => break,
             };
             self.path.push(Segment::String(key));
-            dbg!(&self.path);
 
             map.next_value_seed(&mut *self)?;
             self.path.pop();

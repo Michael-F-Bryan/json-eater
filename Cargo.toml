@@ -6,6 +6,19 @@ license = "MIT OR Apache-2.0"
 edition = "2018"
 
 [dependencies]
+fetch-data = "0.1.4"
 im = { version = "15.1.0", features = ["serde"] }
 serde = { version = "1.0.138", features = ["derive", "rc"] }
 serde_json = "1.0.82"
+
+[dev-dependencies]
+criterion = "0.3.6"
+once_cell = "1.13.0"
+tempfile = "3.3.0"
+
+[[bench]]
+name = "benchmarks"
+harness = false
+
+[profile.bench]
+debug = true
