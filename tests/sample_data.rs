@@ -6,12 +6,17 @@ fn update_registry() {
     let benchmark_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("benches");
     let data_dir = benchmark_dir.join("data");
     let registry_path = benchmark_dir.join("sample-data.txt");
-    let upstream_url = "https://www.hl7.org/fhir/";
+    let upstream_url = "http://docs.smarthealthit.org/dstu2-examples/examples/";
 
     let _ = std::fs::remove_dir_all(&data_dir);
     std::fs::create_dir_all(&data_dir).unwrap();
 
-    let files = ["patient-example.json", "patient-example-proband.json"];
+    let files = [
+        "diagnosticreport-examples-lab-text.canonical.json",
+        "conceptmap-example-specimen-type.canonical.json",
+        "allergyintolerance-example.canonical.json",
+        "account-example.canonical.json",
+    ];
     let mut registry = BTreeMap::new();
 
     for file in files {

@@ -1,9 +1,13 @@
+#![doc = include_str!("../README.md")]
+
+mod csv;
 mod paths;
 mod seed;
 mod value;
 mod visitor;
 
 pub use crate::{
+    csv::CsvWriter,
     paths::{Path, Segment},
     value::Value,
     visitor::Visitor,
@@ -13,9 +17,9 @@ use crate::seed::Seed;
 use serde::de::DeserializeSeed;
 use std::io::Read;
 
-pub fn eat_json(
-    json: &[u8],
-    visitor: impl Visitor,
+pub fn eat_json<'a>(
+    json: &'a [u8],
+    visitor: impl Visitor<'a>,
 ) -> Result<(), serde_json::Error> {
     let mut seed = Seed::new(visitor);
     let mut de = serde_json::Deserializer::from_slice(json);
@@ -24,9 +28,9 @@ pub fn eat_json(
     Ok(())
 }
 
-pub fn eat_json_read(
+pub fn eat_json_read<'a>(
     reader: impl Read,
-    visitor: impl Visitor,
+    visitor: impl Visitor<'a>,
 ) -> Result<(), serde_json::Error> {
     let mut seed = Seed::new(visitor);
     let mut de = serde_json::Deserializer::from_reader(reader);
@@ -44,7 +48,7 @@ mod tests {
         items: Vec<(String, String)>,
     }
 
-    impl crate::Visitor for Visitor {
+    impl crate::Visitor<'_> for Visitor {
         fn visit_any(&mut self, path: &Path, value: Value<'_>) {
             self.items.push((path.to_string(), value.to_string()));
         }
@@ -56,6 +60,7 @@ mod tests {
             "name": "John",
             "isAlive": true,
             "age": -27,
+            "missing": null,
             "address": {
                 "streetAddress": "21 2nd Street"
             },
@@ -66,6 +71,7 @@ mod tests {
             ("name".to_string(), "John".to_string()),
             ("isAlive".to_string(), "true".to_string()),
             ("age".to_string(), "-27".to_string()),
+            ("missing".to_string(), "".to_string()),
             (
                 "address/streetAddress".to_string(),
                 "21 2nd Street".to_string(),

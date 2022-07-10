@@ -5,12 +5,12 @@ use serde::de::{DeserializeSeed, MapAccess, SeqAccess};
 use crate::{Path, Segment, Visitor};
 
 #[derive(Debug)]
-pub(crate) struct Seed<V> {
+pub(crate) struct Seed<'de, V> {
     visitor: V,
-    path: Path,
+    path: Path<'de>,
 }
 
-impl<V: Visitor> Seed<V> {
+impl<'de, V: Visitor<'de>> Seed<'de, V> {
     pub(crate) fn new(visitor: V) -> Self {
         Seed {
             visitor,
@@ -19,7 +19,7 @@ impl<V: Visitor> Seed<V> {
     }
 }
 
-impl<'de, V: Visitor> DeserializeSeed<'de> for &mut Seed<V> {
+impl<'de, V: Visitor<'de>> DeserializeSeed<'de> for &mut Seed<'de, V> {
     type Value = ();
 
     fn deserialize<D>(self, de: D) -> Result<Self::Value, D::Error>
@@ -30,11 +30,27 @@ impl<'de, V: Visitor> DeserializeSeed<'de> for &mut Seed<V> {
     }
 }
 
-impl<'de, V: Visitor> serde::de::Visitor<'de> for &mut Seed<V> {
+impl<'de, V: Visitor<'de>> serde::de::Visitor<'de> for &mut Seed<'de, V> {
     type Value = ();
 
     fn expecting(&self, _formatter: &mut fmt::Formatter) -> fmt::Result {
         unreachable!("Visiting should never fail")
+    }
+
+    fn visit_none<E>(self) -> Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        self.visitor.visit_null(&self.path);
+        Ok(())
+    }
+
+    fn visit_unit<E>(self) -> Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        self.visitor.visit_null(&self.path);
+        Ok(())
     }
 
     fn visit_bool<E>(self, v: bool) -> Result<Self::Value, E>
@@ -45,11 +61,26 @@ impl<'de, V: Visitor> serde::de::Visitor<'de> for &mut Seed<V> {
         Ok(())
     }
 
-    fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+    fn visit_borrowed_str<E>(self, v: &'de str) -> Result<Self::Value, E>
     where
         E: serde::de::Error,
     {
         self.visitor.visit_str(&self.path, v);
+        Ok(())
+    }
+
+    fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        self.visit_string(v.to_string())
+    }
+
+    fn visit_string<E>(self, v: String) -> Result<Self::Value, E>
+    where
+        E: serde::de::Error,
+    {
+        self.visitor.visit_owned_string(&&self.path, v);
         Ok(())
     }
 
@@ -81,11 +112,7 @@ impl<'de, V: Visitor> serde::de::Visitor<'de> for &mut Seed<V> {
     where
         A: MapAccess<'de>,
     {
-        loop {
-            let key = match map.next_key()? {
-                Some(k) => k,
-                None => break,
-            };
+        while let Some(key) = map.next_key()? {
             self.path.push(Segment::String(key));
 
             map.next_value_seed(&mut *self)?;
