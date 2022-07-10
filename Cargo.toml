@@ -4,3 +4,8 @@ version = "0.1.0"
 authors = ["Michael-F-Bryan <michaelfbryan@gmail.com>"]
 license = "MIT OR Apache-2.0"
 edition = "2018"
+
+[dependencies]
+im = { version = "15.1.0", features = ["serde"] }
+serde = { version = "1.0.138", features = ["derive", "rc"] }
+serde_json = "1.0.82"
