@@ -1,0 +1,111 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="JSON Eater"><meta name="keywords" content="rust, rustlang, rust-lang, json_eater"><title>json_eater - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../dark.css" disabled><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../storage.js"></script><script defer src="../crates.js"></script><script defer src="../main.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../json_eater/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div>
+        </a><h2 class="location"></h2>
+    </nav>
+    <nav class="sidebar"><a class="sidebar-logo" href="../json_eater/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div>
+        </a><h2 class="location"><a href="#">Crate json_eater</a></h2><div class="sidebar-elems"><div class="block"><ul><li class="version">Version 0.1.0</li><li><a id="all-types" href="all.html">All Items</a></li></ul></div><section><div class="block"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div></section></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../json_eater/index.html"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1">
+                                <a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../wheel.svg"></a></div>
+                        </div></form></nav></div><section id="main-content" class="content"><div class="main-heading">
+    <h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">json_eater</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/json_eater/lib.rs.html#1-86">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="json-eater"><a href="#json-eater">JSON Eater</a></h2>
+<p><a href="https://github.com/Michael-F-Bryan/json-eater/actions"><img src="https://github.com/Michael-F-Bryan/json-eater/workflows/Continuous%20integration/badge.svg?branch=master" alt="Continuous integration" /></a></p>
+<p>(<a href="https://michael-f-bryan.github.io/json-eater">API Docs</a>)</p>
+<p>Turn nested JSON objects into a form that can easily be searched by other tool.</p>
+<h3 id="examples"><a href="#examples">Examples</a></h3>
+<p>The <a href="fn.eat_json.html" title="eat_json()"><code>eat_json()</code></a> function is where you want to start. You can use the
+<a href="struct.CsvWriter.html" title="CsvWriter"><code>CsvWriter</code></a> if you don’t want to implement your own <a href="trait.Visitor.html" title="Visitor"><code>Visitor</code></a>.</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use</span> <span class="ident">json_eater::CsvWriter</span>;
+
+<span class="kw">let</span> <span class="ident">json</span> <span class="op">=</span> <span class="string">r#&quot;{
+    &quot;name&quot;: &quot;John&quot;,
+    &quot;isAlive&quot;: true,
+    &quot;age&quot;: -27,
+    &quot;address&quot;: {
+        &quot;streetAddress&quot;: &quot;21 2nd Street&quot;
+    },
+    &quot;numbers&quot;: [12.32]
+  }&quot;#</span>;
+
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">writer</span> <span class="op">=</span> <span class="ident">CsvWriter::new</span>(<span class="ident">Vec::new</span>());
+<span class="ident">json_eater::eat_json</span>(<span class="ident">json</span>.<span class="ident">as_bytes</span>(), <span class="kw-2">&amp;mut</span> <span class="ident">writer</span>).<span class="ident">unwrap</span>();
+
+<span class="kw">let</span> <span class="ident">csv</span> <span class="op">=</span> <span class="ident">String::from_utf8</span>(<span class="ident">writer</span>.<span class="ident">into_inner</span>()).<span class="ident">unwrap</span>();
+
+<span class="macro">assert_eq!</span>(
+  <span class="ident">csv</span>.<span class="ident">trim</span>(),
+  <span class="string">&quot;
+name, John
+isAlive, true
+age, -27
+address/streetAddress, 21 2nd Street
+numbers/0, 12.32
+  &quot;</span>.<span class="ident">trim</span>(),
+);</code></pre></div>
+<h3 id="benchmarks"><a href="#benchmarks">Benchmarks</a></h3>
+<p>This project comes with a suite of benchmarks. The <a href="https://bheisler.github.io/criterion.rs/book/criterion_rs.html"><code>criterion</code> tool</a>
+can be used to run these benchmarks and generate pretty graphs.</p>
+<p>First, make sure the <code>cargo criterion</code> subcommand is installed.</p>
+<div class="example-wrap"><pre class="language-console"><code>$ cargo install cargo-criterion</code></pre></div>
+<p>Then run it.</p>
+<div class="example-wrap"><pre class="language-console"><code>$ cargo criterion
+input format/in-memory buffer
+                        time:   [808.13 µs 810.97 µs 814.10 µs]
+                        thrpt:  [641.24 MiB/s 643.71 MiB/s 645.98 MiB/s]
+input format/file reader
+                        time:   [3.1903 ms 3.2000 ms 3.2126 ms]
+                        thrpt:  [162.50 MiB/s 163.14 MiB/s 163.63 MiB/s]
+
+writer overhead/baseline
+                        time:   [806.04 µs 807.00 µs 808.15 µs]
+                        thrpt:  [645.96 MiB/s 646.89 MiB/s 647.65 MiB/s]
+Benchmarking writer overhead/csv in memory: Warming up for 3.0000 s
+writer overhead/csv in memory
+                        time:   [1.7513 ms 1.7526 ms 1.7543 ms]
+                        thrpt:  [297.58 MiB/s 297.87 MiB/s 298.08 MiB/s]
+Benchmarking writer overhead/csv on disk: Warming up for 3.0000 s
+writer overhead/csv on disk
+                        time:   [1.8821 ms 1.8836 ms 1.8853 ms]
+                        thrpt:  [276.90 MiB/s 277.15 MiB/s 277.37 MiB/s]
+
+input size/547.39 KB    time:   [805.07 µs 807.45 µs 810.97 µs]
+                        thrpt:  [643.72 MiB/s 646.52 MiB/s 648.44 MiB/s]
+input size/124.94 KB    time:   [191.32 µs 191.55 µs 191.80 µs]
+                        thrpt:  [621.24 MiB/s 622.04 MiB/s 622.77 MiB/s]
+input size/2.47 KB      time:   [3.3742 µs 3.3817 µs 3.3902 µs]
+                        thrpt:  [695.67 MiB/s 697.41 MiB/s 698.96 MiB/s]
+input size/111 B        time:   [290.75 ns 290.90 ns 291.04 ns]
+                        thrpt:  [363.73 MiB/s 363.90 MiB/s 364.08 MiB/s]
+
+Process 547.39 KB         time:   [4.1542 ms 4.1554 ms 4.1567 ms]</code></pre></div>
+<p>The report will be available under the <code>target/</code> folder.</p>
+<div class="example-wrap"><pre class="language-console"><code>$ ls target/criterion/reports
+index.html  Index 547.39 KB  input format  input size  writer overhead</code></pre></div><h3 id="license"><a href="#license">License</a></h3>
+<p>This project is licensed under either of</p>
+<ul>
+<li>Apache License, Version 2.0, (<a href="LICENSE-APACHE.md">LICENSE-APACHE</a> or
+<a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>)</li>
+<li>MIT license (<a href="LICENSE-MIT.md">LICENSE-MIT</a> or
+<a href="http://opensource.org/licenses/MIT">http://opensource.org/licenses/MIT</a>)</li>
+</ul>
+<p>at your option.</p>
+<p>It is recommended to always use <a href="https://github.com/crev-dev/cargo-crev">cargo-crev</a> to verify the
+trustworthiness of each of your dependencies, including this one.</p>
+<h4 id="contribution"><a href="#contribution">Contribution</a></h4>
+<p>Unless you explicitly state otherwise, any contribution intentionally
+submitted for inclusion in the work by you, as defined in the Apache-2.0
+license, shall be dual licensed as above, without any additional terms or
+conditions.</p>
+<p>The intent of this crate is to be free of soundness bugs. The developers will
+do their best to avoid them, and welcome help in analysing and fixing them.</p>
+</div></details><h2 id="structs" class="small-section-header"><a href="#structs">Structs</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.CsvWriter.html" title="json_eater::CsvWriter struct">CsvWriter</a></div><div class="item-right docblock-short"><p>A <a href="trait.Visitor.html" title="Visitor"><code>Visitor</code></a> implementation which will write each <a href="struct.Path.html" title="Path"><code>Path</code></a>-<a href="enum.Value.html" title="Value"><code>Value</code></a> pair
+to a CSV file.</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="struct" href="struct.Path.html" title="json_eater::Path struct">Path</a></div><div class="item-right docblock-short"><p>The path to an element.</p>
+</div></div></div><h2 id="enums" class="small-section-header"><a href="#enums">Enums</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.Segment.html" title="json_eater::Segment enum">Segment</a></div><div class="item-right docblock-short"><p>A particular segment from a <a href="struct.Path.html" title="Path"><code>Path</code></a>, typically the name of a field or the
+index into an array.</p>
+</div></div><div class="item-row"><div class="item-left module-item"><a class="enum" href="enum.Value.html" title="json_eater::Value enum">Value</a></div><div class="item-right docblock-short"><p>Any value that a leaf field may take.</p>
+</div></div></div><h2 id="traits" class="small-section-header"><a href="#traits">Traits</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="trait" href="trait.Visitor.html" title="json_eater::Visitor trait">Visitor</a></div><div class="item-right docblock-short"><p>A set of callbacks that will be triggered as the JSON document is parsed.</p>
+</div></div></div><h2 id="functions" class="small-section-header"><a href="#functions">Functions</a></h2>
+<div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.eat_json.html" title="json_eater::eat_json fn">eat_json</a></div><div class="item-right docblock-short"></div></div><div class="item-row"><div class="item-left module-item"><a class="fn" href="fn.eat_json_read.html" title="json_eater::eat_json_read fn">eat_json_read</a></div><div class="item-right docblock-short"></div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="json_eater" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (c396bb3b8 2022-07-10)" ></div>
+</body></html>

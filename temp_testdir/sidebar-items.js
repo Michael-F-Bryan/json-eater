@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"static":[["ENV_RSTEST_TEMP_DIR_ROOT",""],["ENV_RSTEST_TEMP_DIR_ROOT_NAME",""],["RSTEST_TEMP_DIR_ROOT_DEFAULT",""]],"struct":[["TempDir","Create a dir that will be removed."]]};
